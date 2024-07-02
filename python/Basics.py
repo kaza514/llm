@@ -61,9 +61,20 @@ else:
     print("Could not find true expression")
 print("Good bye!")
 
-
 ############
 # Example 5
+############
+# While
+
+count = 0
+while (count < 9):
+    print('The count is:', count)
+    count = count + 1
+print("Good bye kaju!")
+
+
+############
+# Example 6
 ############
 # Nested While
 
