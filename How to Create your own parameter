@@ -1,0 +1,46 @@
+In LLaMA3, creating and deploying your own parameter involves defining a new parameter in the `llama.yml` configuration file and then updating the Docker image to include that parameter.
+
+**Step 1: Define the new parameter**
+
+In your `llama.yml` file, add a new parameter under the `parameters` section:
+```yaml
+parameters:
+  my_new_parameter:
+    type: string
+    default: "default_value"
+```
+This defines a new parameter called `my_new_parameter` of type `string` with a default value.
+
+**Step 2: Update the Docker image**
+
+You'll need to update your Docker image to include this new parameter. You can do this by creating a new file in your Docker image, e.g., `parameters.txt`, and adding the following content:
+```text
+my_new_parameter=default_value
+```
+This file contains the value of the new parameter.
+
+**Step 3: Update the LLaMA3 configuration**
+
+In your `llama.yml` file, update the `parameters` section to include this new file:
+```yaml
+parameters:
+  - name: my_new_parameter
+    type: file
+    path: parameters.txt
+```
+This tells LLaMA3 to load the value of the `my_new_parameter` from the `parameters.txt` file in your Docker image.
+
+**Step 4: Rebuild and redeploy the Docker image**
+
+Rebuild your Docker image using the updated `llama.yml` file, and then redeploy it to your container registry (e.g., Docker Hub).
+
+**Step 5: Configure LLaMA3**
+
+Update your LLaMA3 configuration to use the new parameter:
+```yaml
+parameters:
+  my_new_parameter: default_value
+```
+This sets the value of `my_new_parameter` to its default value.
+
+That's it! You have now created and deployed a custom parameter in LLaMA3.
