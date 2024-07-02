@@ -1,0 +1,67 @@
+**Model Name:** `MyTinyTextLM`
+
+**Description:** A small, lightweight language model trained on the Twitter dataset.
+
+**Architecture:**
+
+* **Encoder:** A single-layer transformer with 128-dimensional embeddings and 256-dimensional hidden states.
+* **Decoder:** A single-layer transformer with 128-dimensional embeddings and 256-dimensional hidden states.
+* **Vocabulary Size:** 50,000
+
+**Training Data:**
+
+* **Dataset:** Twitter dataset ( ~10M tweets)
+* **Preprocessing:** Tokenization, stemming, and removing stop words.
+
+**Model Weights:**
+
+* **Encoder Weights:** `tiny_text_encoder.h5`
+* **Decoder Weights:** `tiny_text_decoder.h5`
+
+**Docker Image:**
+
+* **Base Image:** `python:3.9-slim`
+* **Package Manager:** `pip install transformers==4.10.0`
+* **Model Files:** `tiny_text_encoder.h5` and `tiny_text_decoder.h5`
+* **Dockerfile:**
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY tiny_text_encoder.h5 .
+COPY tiny_text_decoder.h5 .
+
+CMD ["python", "main.py"]
+```
+**Main Script (main.py):**
+
+```python
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Load the model and tokenizer
+model = AutoModelForCausalLM.from_pretrained("tiny_text_lm")
+tokenizer = AutoTokenizer.from_pretrained("tiny_text_lm")
+
+def generate_text(prompt):
+    # Preprocess the input prompt
+    inputs = tokenizer.encode(prompt, return_tensors="pt", max_length=50)
+
+    # Generate text using the model
+    outputs = model.generate(inputs, num_beams=4, max_length=100)
+    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    return generated_text
+
+if __name__ == "__main__":
+    prompt = "I love playing basketball"
+    generated_text = generate_text(prompt)
+    print(generated_text)
+```
+This custom model is a simple language model trained on the Twitter dataset. It uses a single-layer transformer as both encoder and decoder, with 128-dimensional embeddings and 256-dimensional hidden
+states. The model weights are stored in two separate files (`tiny_text_encoder.h5` and `tiny_text_decoder.h5`) and can be loaded using Hugging Face Transformers.
